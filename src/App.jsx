@@ -6,6 +6,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filtro, setFiltro] = useState("");
+  const [prioritarios, setPrioritarios] = useState([]);
 
 
   useEffect (() => {
@@ -29,6 +30,14 @@ function App() {
       }
       obtenerDesembarques();
     }, []);
+  
+  useEffect (() => {
+    const guardados = localStorage.getItem("prioritarios");
+
+    if (guardados) {
+      setPrioritarios(JSON.parse(guardados));
+    }
+  }, []);
 
   if (loading) {
     return <p>Cargando desembarques...</p>
@@ -37,6 +46,24 @@ function App() {
   if (error){ 
     return <p>Error: {error}</p>
   }
+
+  const togglePrioritario = (id) => {
+  setPrioritarios((prev) => {
+    const existe = prev.includes(id);
+
+    let nuevos;
+
+    if (existe) {
+      nuevos = prev.filter((item) => item !== id);
+    } else {
+      nuevos = [...prev, id];
+    }
+
+    localStorage.setItem("prioritarios", JSON.stringify(nuevos));
+
+    return nuevos;
+  });
+};
 
   const desembarquesFiltrados = desembarques.filter((item) => {
     const texto = filtro.toLowerCase().trim();
@@ -57,7 +84,11 @@ function App() {
         value={filtro}
         onChange={(e) => setFiltro(e.target.value)}
       />
-      <ListaDesembarques desembarques = {desembarquesFiltrados}/>
+      <ListaDesembarques
+        desembarques={desembarquesFiltrados}
+        prioritarios={prioritarios}
+        togglePrioritario={togglePrioritario}
+      />
     </>
   );
 }

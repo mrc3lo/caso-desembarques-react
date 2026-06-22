@@ -1,4 +1,4 @@
-function FilaDesembarque({ desembarque }) {
+function FilaDesembarque({ desembarque, esPrioritario, togglePrioritario }) {
 
   return (
 
@@ -13,6 +13,12 @@ function FilaDesembarque({ desembarque }) {
       <td>{desembarque.kilos}</td>
 
       <td>{desembarque.estado}</td>
+
+      <td>
+        <button onClick={() => togglePrioritario(desembarque.id)}>
+            {esPrioritario ? "⭐" : "☆"}
+        </button>
+      </td>
 
     </tr>
 
