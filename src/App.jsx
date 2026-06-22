@@ -1,22 +1,39 @@
-
+import {useEffect, useState} from "react";
 import ListaDesembarques from "./components/ListaDesembarques";
 
 function App() {
-  const desembarques = [
-    { "id": 1,  "especie": "Jurel",     "embarcacion": "Don Lorenzo",   "fecha": "2026-06-15", "kilos": 12450, "estado": "procesado" },
-    { "id": 2,  "especie": "Merluza",   "embarcacion": "Mar de Chile",  "fecha": "2026-06-15", "kilos": 8300,  "estado": "pendiente" },
-    { "id": 3,  "especie": "Sardina",   "embarcacion": "Estrella Sur",  "fecha": "2026-06-16", "kilos": 21500, "estado": "procesado" },
-    { "id": 4,  "especie": "Anchoveta", "embarcacion": "Pelícano II",   "fecha": "2026-06-16", "kilos": 17800, "estado": "rechazado" },
-    { "id": 5,  "especie": "Reineta",   "embarcacion": "Don Lorenzo",   "fecha": "2026-06-16", "kilos": 4600,  "estado": "pendiente" },
-    { "id": 6,  "especie": "Jurel",     "embarcacion": "Caleta Norte",  "fecha": "2026-06-17", "kilos": 15200, "estado": "procesado" },
-    { "id": 7,  "especie": "Merluza",   "embarcacion": "Mar de Chile",  "fecha": "2026-06-17", "kilos": 9100,  "estado": "pendiente" },
-    { "id": 8,  "especie": "Sardina",   "embarcacion": "Estrella Sur",  "fecha": "2026-06-17", "kilos": 19850, "estado": "procesado" },
-    { "id": 9,  "especie": "Anchoveta", "embarcacion": "Pelícano II",   "fecha": "2026-06-18", "kilos": 16400, "estado": "rechazado" },
-    { "id": 10, "especie": "Reineta",   "embarcacion": "Caleta Norte",  "fecha": "2026-06-18", "kilos": 5200,  "estado": "procesado" },
-    { "id": 11, "especie": "Jurel",     "embarcacion": "Don Lorenzo",   "fecha": "2026-06-18", "kilos": 13750, "estado": "pendiente" },
-    { "id": 12, "especie": "Merluza",   "embarcacion": "Mar de Chile",  "fecha": "2026-06-19", "kilos": 7600,  "estado": "rechazado" }
-  ];
-  
+  const [desembarques, setDesembarques] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect (() => {
+      async function obtenerDesembarques() {
+        try {
+          const response = await fetch(import.meta.env.VITE_API_URL);
+
+          if (!response.ok){
+            throw new Error("No fue posible obtener los desembarques")
+          }
+
+          const datos = await response.json();
+          setDesembarques(datos);
+
+          if (loading) {
+            return <p>Cargando desembarques...</p>
+          }
+
+          if (error){ return <p>Error: {error}</p>}
+
+        } catch (error) {
+            setError(error.message);
+
+        } finally {
+          setLoading(false)
+        }
+      }
+      obtenerDesembarques();
+    }, []);
+
   return (
     <>
       <h1> Panel de Embarques </h1>
