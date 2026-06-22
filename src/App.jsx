@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import ListaDesembarques from "./components/ListaDesembarques";
 import { sanitizeText } from "./utils/sanitize";
+import { getDesembarques } from "./services/api";
 
 function App() {
   const [desembarques, setDesembarques] = useState([]);
@@ -13,19 +14,14 @@ function App() {
   useEffect (() => {
       async function obtenerDesembarques() {
         try {
-          const response = await fetch(import.meta.env.VITE_API_URL);
-
-          if (!response.ok){
-            throw new Error("No fue posible obtener los desembarques")
-          }
-
-          const datos = await response.json();
+          const datos = await getDesembarques();
           setDesembarques(datos);
-
-        } catch (err) {
+        } 
+        catch (err) {
             setError(err.message);
 
-        } finally {
+        } 
+        finally {
           setLoading(false)
         }
       }
