@@ -5,6 +5,8 @@ function App() {
   const [desembarques, setDesembarques] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filtro, setFiltro] = useState("");
+
 
   useEffect (() => {
       async function obtenerDesembarques() {
@@ -18,14 +20,8 @@ function App() {
           const datos = await response.json();
           setDesembarques(datos);
 
-          if (loading) {
-            return <p>Cargando desembarques...</p>
-          }
-
-          if (error){ return <p>Error: {error}</p>}
-
-        } catch (error) {
-            setError(error.message);
+        } catch (err) {
+            setError(err.message);
 
         } finally {
           setLoading(false)
@@ -34,10 +30,34 @@ function App() {
       obtenerDesembarques();
     }, []);
 
+  if (loading) {
+    return <p>Cargando desembarques...</p>
+          }
+
+  if (error){ 
+    return <p>Error: {error}</p>
+  }
+
+  const desembarquesFiltrados = desembarques.filter((item) => {
+    const texto = filtro.toLowerCase().trim();
+
+    return (
+      item.especie?.toLowerCase().includes(texto) ||
+      item.estado?.toLowerCase().includes(texto)
+    );
+});
+
   return (
     <>
-      <h1> Panel de Embarques </h1>
-      <ListaDesembarques desembarques = {desembarques}/>
+      <h1>Panel de Embarques</h1>
+
+      <input
+        type="text"
+        placeholder="Filtrar por especie o estado..."
+        value={filtro}
+        onChange={(e) => setFiltro(e.target.value)}
+      />
+      <ListaDesembarques desembarques = {desembarquesFiltrados}/>
     </>
   );
 }
