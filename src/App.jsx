@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import ListaDesembarques from "./components/ListaDesembarques";
+import { sanitizeText } from "./utils/sanitize";
 
 function App() {
   const [desembarques, setDesembarques] = useState([]);
@@ -66,7 +67,7 @@ function App() {
 };
 
   const desembarquesFiltrados = desembarques.filter((item) => {
-    const texto = filtro.toLowerCase().trim();
+    const texto = sanitizeText(filtro);
 
     return (
       item.especie?.toLowerCase().includes(texto) ||
